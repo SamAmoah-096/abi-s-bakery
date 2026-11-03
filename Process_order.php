@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Database configuration
 $host = 'localhost';
-$dbname = 'abis_bakery';
+$dbname = 'biggabs_bakery';
 $username = 'root';
 $password = '';
 
@@ -171,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else {
         http_response_code(200);
-        echo json_encode(['status' => 'Abi\'s Bakery Ghanaian Pastries Inquiry API is operational']);
+        echo json_encode(['status' => 'Biggabs Bakery Ghanaian Pastries Inquiry API is operational']);
     }
 } else {
     http_response_code(405);
@@ -190,13 +190,13 @@ function logOrderToFile($data, $orderId) {
 
 function sendOrderConfirmationEmail($orderData, $orderId) {
     $to = $orderData['customer_email'];
-    $subject = "Inquiry Received — Abi's Bakery (#$orderId)";
+    $subject = "Inquiry Received — Biggabs Bakery (#$orderId)";
     
     $message = "
     <html>
     <head><title>Pastry Inquiry Confirmation</title></head>
     <body style='font-family: Arial, sans-serif; color: #2A1E17; line-height: 1.6;'>
-        <h2>Thank you for contacting Abi's Bakery!</h2>
+        <h2>Thank you for contacting Biggabs Bakery!</h2>
         <p>Dear " . htmlspecialchars($orderData['customer_name']) . ",</p>
         <p>We've received your inquiry for our handcrafted locally made Ghanaian pastries.</p>
         
@@ -213,13 +213,13 @@ function sendOrderConfirmationEmail($orderData, $orderId) {
     $message .= "
         </ul>
         <p>Abigail will reach out directly via WhatsApp or phone to confirm your pricing, ingredients, and delivery or pickup time.</p>
-        <p>Warm regards,<br><strong>Abigail Amoah &amp; The Abi's Bakery Family</strong><br>Accra, Ghana</p>
+        <p>Warm regards,<br><strong>Abigail Amoah &amp; The Biggabs Bakery Family</strong><br>Accra, Ghana</p>
     </body>
     </html>";
     
     $headers = "MIME-Version: 1.0\r\n";
     $headers .= "Content-type: text/html; charset=UTF-8\r\n";
-    $headers .= "From: Abi's Bakery <hello@abisbakery.com>\r\n";
+    $headers .= "From: Biggabs Bakery <hello@biggabsbakery.com>\r\n";
     
     return @mail($to, $subject, $message, $headers);
 }

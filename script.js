@@ -1,5 +1,5 @@
 /**
- * Abi's Bakery - Main Interactive JavaScript
+ * Biggabs Bakery - Main Interactive JavaScript
  * Custom Ghanaian Pastries & Bakes · Order Inquiry & WhatsApp Integration
  * Owner: Abigail Amoah
  */
@@ -12,7 +12,7 @@ const BakeryInquiry = {
 
     init() {
         try {
-            const saved = sessionStorage.getItem('abis_inquiry');
+            const saved = sessionStorage.getItem('biggabs_inquiry');
             if (saved) {
                 this.items = JSON.parse(saved);
             }
@@ -32,7 +32,7 @@ const BakeryInquiry = {
 
     save() {
         try {
-            sessionStorage.setItem('abis_inquiry', JSON.stringify(this.items));
+            sessionStorage.setItem('biggabs_inquiry', JSON.stringify(this.items));
         } catch (e) {
             console.warn('Failed to save inquiry:', e);
         }
@@ -165,7 +165,7 @@ function showToast(message, type = 'info') {
 
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
-    
+
     let iconClass = 'fa-info-circle';
     if (type === 'success') iconClass = 'fa-check-circle';
     if (type === 'error') iconClass = 'fa-exclamation-circle';
@@ -188,8 +188,8 @@ function showToast(message, type = 'info') {
 // Generate direct WhatsApp link with selected inquiry items
 function openWhatsAppInquiry(customerName = '', customerPhone = '', notes = '') {
     const items = BakeryInquiry.items;
-    let message = `Hello Abigail! I am contacting you regarding pricing and availability for locally made pastries from Abi's Bakery:\n\n`;
-    
+    let message = `Hello Abigail! I am contacting you regarding pricing and availability for locally made pastries from Biggabs Bakery:\n\n`;
+
     if (items.length > 0) {
         message += `*Requested Ghanaian Pastries & Bakes:*\n`;
         items.forEach(item => {
@@ -231,7 +231,7 @@ function showOrderConfirmationModal(orderData, orderId) {
         modalBody.innerHTML = `
             <div class="receipt-card">
                 <div class="receipt-header">
-                    <div class="receipt-badge"><i class="fas fa-check"></i> Inquiry Submitted to Abi!</div>
+                    <div class="receipt-badge"><i class="fas fa-check"></i> Inquiry Submitted to Biggabs Bakery!</div>
                     <h3>Reference #${orderId}</h3>
                     <p class="receipt-time">${new Date().toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</p>
                 </div>
@@ -264,7 +264,7 @@ function showOrderConfirmationModal(orderData, orderId) {
                 <div class="receipt-footer">
                     <p style="margin-bottom: 14px; font-size: 0.9rem; color: var(--text-cream);"><strong>Abigail Amoah</strong> will reach out directly to confirm pricing, batch size, and delivery time.</p>
                     <button type="button" class="btn btn-whatsapp" onclick="openWhatsAppInquiry('${escapeHtml(orderData.customer_name)}', '${escapeHtml(orderData.customer_phone)}', '${escapeHtml(orderData.special_instructions)}')">
-                        <i class="fab fa-whatsapp"></i> Chat with Abi on WhatsApp
+                        <i class="fab fa-whatsapp"></i> Chat with Biggabs Bakery on WhatsApp
                     </button>
                 </div>
             </div>
@@ -304,7 +304,7 @@ function openLightbox(src, caption) {
     const img = document.getElementById('lightbox-img');
     const cap = document.getElementById('lightbox-caption');
     if (img) img.src = src;
-    if (cap) cap.textContent = caption || "Abi's Bakery Delight";
+    if (cap) cap.textContent = caption || "Biggabs Bakery Delight";
 
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -337,7 +337,7 @@ function setupMobileMenu() {
     const mainNav = document.querySelector('.main-nav');
     const drawerCloseBtn = document.querySelector('.drawer-close-btn');
     const navLinks = document.querySelectorAll('.nav-list a, .mobile-order-btn, .mobile-drawer-header .logo');
-    
+
     let overlay = document.querySelector('.mobile-nav-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
@@ -427,7 +427,7 @@ function setupMobileMenu() {
                             }
                             try {
                                 history.pushState(null, '', `#${targetId}`);
-                            } catch (err) {}
+                            } catch (err) { }
                         }, 80);
                         return;
                     }
@@ -530,7 +530,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         if (anchor.closest('.main-nav')) return;
 
-        anchor.addEventListener('click', function(e) {
+        anchor.addEventListener('click', function (e) {
             const targetId = this.getAttribute('href').substring(1);
             if (!targetId) return;
 
@@ -544,7 +544,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 try {
                     history.pushState(null, '', `#${targetId}`);
-                } catch (err) {}
+                } catch (err) { }
             }
         });
     });
@@ -594,7 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (tabButtons.length > 0) {
         tabButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 const targetTab = this.getAttribute('data-tab');
 
                 tabButtons.forEach(b => b.classList.remove('active'));
@@ -616,14 +616,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 8. Connect "Inquire Item" buttons
     document.querySelectorAll('.add-to-inquiry-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
+        btn.addEventListener('click', function (e) {
             e.preventDefault();
             const name = this.getAttribute('data-name');
             const category = this.getAttribute('data-category') || 'Ghanaian Pastry';
 
             if (name) {
                 BakeryInquiry.addItem(name, category);
-                
+
                 this.classList.add('added');
                 const origHtml = this.innerHTML;
                 this.innerHTML = '<i class="fas fa-check"></i> Added to Inquiry';
@@ -651,7 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(orderForm);
             const submitBtn = orderForm.querySelector('button[type="submit"]');
             const origBtnText = submitBtn ? submitBtn.innerHTML : 'Send Order Inquiry';
-            
+
             if (submitBtn) {
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting Inquiry...';
@@ -670,7 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }))
             };
 
-            let generatedOrderId = 'ABI-GH-' + Math.floor(100000 + Math.random() * 900000);
+            let generatedOrderId = 'BIGGABS-GH-' + Math.floor(100000 + Math.random() * 900000);
 
             try {
                 const response = await fetch('Process_order.php', {
@@ -698,7 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 showOrderConfirmationModal(orderData, generatedOrderId);
                 orderForm.reset();
-                showToast(`Inquiry #${generatedOrderId} sent to Abigail!`, 'success');
+                showToast(`Inquiry #${generatedOrderId} sent to Biggabs Bakery!`, 'success');
             }
         });
     }
