@@ -188,7 +188,7 @@ function showToast(message, type = 'info') {
 // Generate direct WhatsApp link with selected inquiry items
 function openWhatsAppInquiry(customerName = '', customerPhone = '', notes = '') {
     const items = BakeryInquiry.items;
-    let message = `Hello Abigail! I am contacting you first regarding pricing and availability for locally made pastries from Abi's Bakery:\n\n`;
+    let message = `Hello Abigail! I am contacting you regarding pricing and availability for locally made pastries from Abi's Bakery:\n\n`;
     
     if (items.length > 0) {
         message += `*Requested Ghanaian Pastries & Bakes:*\n`;
@@ -222,9 +222,9 @@ function showOrderConfirmationModal(orderData, orderId) {
     if (modalBody) {
         const itemsHtml = orderData.items.map(item => `
             <tr>
-                <td><strong>${escapeHtml(item.name)}</strong><br><small style="color:#777;">${escapeHtml(item.category)}</small></td>
+                <td><strong>${escapeHtml(item.name)}</strong><br><small style="color:#ad9f93;">${escapeHtml(item.category)}</small></td>
                 <td style="text-align: center;">${item.quantity}</td>
-                <td style="text-align: right; color: var(--primary-dark); font-weight: 600;"><i class="fas fa-user-clock"></i> Contact Owner First</td>
+                <td style="text-align: right; color: var(--copper); font-weight: 600;"><i class="fas fa-user-clock"></i> Contact Owner First</td>
             </tr>
         `).join('');
 
@@ -239,7 +239,7 @@ function showOrderConfirmationModal(orderData, orderId) {
                 <div class="receipt-section">
                     <h4>Customer Information</h4>
                     <p><strong>Name:</strong> ${escapeHtml(orderData.customer_name)}</p>
-                    <p><strong>Email:</strong> ${escapeHtml(orderData.customer_email)}</p>
+                    <p><strong>Email:</strong> ${escapeHtml(orderData.customer_email || 'Not provided')}</p>
                     <p><strong>Phone:</strong> ${escapeHtml(orderData.customer_phone)}</p>
                     ${orderData.delivery_address ? `<p><strong>Delivery Location:</strong> ${escapeHtml(orderData.delivery_address)}</p>` : ''}
                     ${orderData.special_instructions ? `<p><strong>Special Instructions:</strong> ${escapeHtml(orderData.special_instructions)}</p>` : ''}
@@ -262,7 +262,7 @@ function showOrderConfirmationModal(orderData, orderId) {
                 </div>
 
                 <div class="receipt-footer">
-                    <p style="margin-bottom: 14px;"><strong>Abigail Amoah</strong> will reach out directly to confirm pricing, batch size, and delivery time.</p>
+                    <p style="margin-bottom: 14px; font-size: 0.9rem; color: var(--text-cream);"><strong>Abigail Amoah</strong> will reach out directly to confirm pricing, batch size, and delivery time.</p>
                     <button type="button" class="btn btn-whatsapp" onclick="openWhatsAppInquiry('${escapeHtml(orderData.customer_name)}', '${escapeHtml(orderData.customer_phone)}', '${escapeHtml(orderData.special_instructions)}')">
                         <i class="fab fa-whatsapp"></i> Chat with Abi on WhatsApp
                     </button>
@@ -322,7 +322,7 @@ function closeLightbox() {
 function smoothScrollToElement(targetEl) {
     if (!targetEl) return;
     const headerEl = document.querySelector('header');
-    const headerOffset = headerEl ? headerEl.offsetHeight + 10 : 75;
+    const headerOffset = headerEl ? headerEl.offsetHeight + 15 : 85;
     const elementPosition = targetEl.getBoundingClientRect().top;
     const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
     window.scrollTo({
@@ -367,7 +367,6 @@ function setupMobileMenu() {
         document.body.style.overflow = '';
     };
 
-    // Expose closeMenu globally
     window.closeMobileMenu = closeMenu;
 
     if (hamburgerBtn && mainNav) {
@@ -397,7 +396,6 @@ function setupMobileMenu() {
                 const href = link.getAttribute('href');
                 if (!href) return;
 
-                // Determine if this is an in-page section target
                 let targetId = '';
                 if (href.startsWith('#')) {
                     targetId = href.substring(1);
@@ -414,16 +412,13 @@ function setupMobileMenu() {
                     if (targetEl) {
                         e.preventDefault();
 
-                        // Immediate visual feedback on the tapped menu link
                         document.querySelectorAll('.nav-list a').forEach(item => item.classList.remove('active'));
                         if (link.closest('.nav-list')) {
                             link.classList.add('active');
                         }
 
-                        // Close mobile drawer and restore body scroll immediately
                         closeMenu();
 
-                        // Delay slightly so mobile browser compositor can unblock body overflow
                         setTimeout(() => {
                             if (targetId === 'home' || targetId === 'top') {
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -438,7 +433,6 @@ function setupMobileMenu() {
                     }
                 }
 
-                // If cross-page navigation, close the menu and let browser proceed
                 closeMenu();
             });
         });
@@ -451,6 +445,64 @@ function setupMobileMenu() {
     }
 }
 
+// Carousel System (Matching Video < and > buttons)
+function setupCarousels() {
+    document.querySelectorAll('.carousel-container').forEach(container => {
+        const track = container.querySelector('.carousel-track');
+        const prevBtn = container.querySelector('.carousel-prev');
+        const nextBtn = container.querySelector('.carousel-next');
+
+        if (!track) return;
+
+        const getScrollStep = () => {
+            const firstCard = track.querySelector('.product-card') || track.querySelector('.gallery-item');
+            if (firstCard) {
+                return firstCard.offsetWidth + 24;
+            }
+            return 320;
+        };
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                track.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                track.scrollBy({ left: getScrollStep(), behavior: 'smooth' });
+            });
+        }
+    });
+
+    // Gallery strip carousel
+    document.querySelectorAll('.gallery-strip').forEach(container => {
+        const track = container.querySelector('.gallery-track');
+        const prevBtn = container.querySelector('.carousel-prev');
+        const nextBtn = container.querySelector('.carousel-next');
+
+        if (!track) return;
+
+        const getScrollStep = () => 220;
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                track.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                track.scrollBy({ left: getScrollStep(), behavior: 'smooth' });
+            });
+        }
+    });
+}
+
 // Document Ready Initialization
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Initialize Inquiry List
@@ -459,7 +511,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Setup Mobile Hamburger Menu
     setupMobileMenu();
 
-    // 3. Sticky Header on Scroll
+    // 3. Setup Carousels
+    setupCarousels();
+
+    // 4. Sticky Header on Scroll
     const header = document.querySelector('header');
     window.addEventListener('scroll', () => {
         if (header) {
@@ -471,9 +526,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, { passive: true });
 
-    // 4. Smooth scroll for all other in-page hash links (hero buttons, cart indicator, footer links)
+    // 5. Smooth scroll for all other in-page hash links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        if (anchor.closest('.main-nav')) return; // handled by setupMobileMenu
+        if (anchor.closest('.main-nav')) return;
 
         anchor.addEventListener('click', function(e) {
             const targetId = this.getAttribute('href').substring(1);
@@ -494,18 +549,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 5. ScrollSpy for Navigation Highlighting
+    // 6. ScrollSpy for Navigation Highlighting
     const sections = document.querySelectorAll('section[id]');
     const scrollNavLinks = document.querySelectorAll('.nav-list a');
     if (sections.length > 0 && scrollNavLinks.length > 0) {
         const updateScrollSpy = () => {
             let current = '';
-            const scrollPos = window.scrollY + 130;
+            const scrollPos = window.scrollY + 140;
 
             if (window.scrollY < 80) {
                 current = 'home';
             } else if ((window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 70)) {
-                // If user is at or very near bottom, activate contact or order section
                 const lastSection = sections[sections.length - 1];
                 if (lastSection) current = lastSection.getAttribute('id');
             } else {
@@ -534,20 +588,9 @@ document.addEventListener('DOMContentLoaded', () => {
         updateScrollSpy();
     }
 
-    // 6. Handle URL Hash on Initial Page Load (e.g. from Menu.html to Index.html#featured)
-    if (window.location.hash) {
-        const hashId = window.location.hash.substring(1);
-        const hashEl = document.getElementById(hashId);
-        if (hashEl) {
-            setTimeout(() => {
-                smoothScrollToElement(hashEl);
-            }, 250);
-        }
-    }
-
-    // 5. Menu Category Tabs
+    // 7. Menu Category Tabs
     const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabPanes = document.querySelectorAll('.tab-pane');
+    const menuRows = document.querySelectorAll('.menu-item-row');
 
     if (tabButtons.length > 0) {
         tabButtons.forEach(btn => {
@@ -557,14 +600,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 tabButtons.forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
 
-                if (tabPanes.length > 0) {
-                    tabPanes.forEach(pane => {
-                        if (targetTab === 'all' || pane.id === targetTab) {
-                            pane.classList.add('active');
-                            pane.style.display = 'block';
+                if (menuRows.length > 0) {
+                    menuRows.forEach(row => {
+                        const rowCat = row.getAttribute('data-category');
+                        if (targetTab === 'all' || rowCat === targetTab) {
+                            row.style.display = 'flex';
                         } else {
-                            pane.classList.remove('active');
-                            pane.style.display = 'none';
+                            row.style.display = 'none';
                         }
                     });
                 }
@@ -572,7 +614,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 6. Connect "Inquire Item" buttons
+    // 8. Connect "Inquire Item" buttons
     document.querySelectorAll('.add-to-inquiry-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -593,7 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 7. Order/Inquiry Form Submission
+    // 9. Order/Inquiry Form Submission
     const orderForm = document.getElementById('order-form');
     if (orderForm) {
         orderForm.addEventListener('submit', async (e) => {
@@ -657,40 +699,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 showOrderConfirmationModal(orderData, generatedOrderId);
                 orderForm.reset();
                 showToast(`Inquiry #${generatedOrderId} sent to Abigail!`, 'success');
-            }
-        });
-    }
-
-    // 8. Contact Form Handling
-    const contactForm = document.querySelector('.contact-form-card form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const btn = contactForm.querySelector('button[type="submit"]');
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            }
-            setTimeout(() => {
-                showToast('Thank you! Your message has been sent to Abigail Amoah.', 'success');
-                contactForm.reset();
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
-                }
-            }, 800);
-        });
-    }
-
-    // 9. Newsletter Form
-    const newsletterForm = document.querySelector('.newsletter-form');
-    if (newsletterForm) {
-        newsletterForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const emailInput = newsletterForm.querySelector('input[type="email"]');
-            if (emailInput && emailInput.value.trim()) {
-                showToast('Welcome to our sweet circle! You are subscribed.', 'success');
-                newsletterForm.reset();
             }
         });
     }
