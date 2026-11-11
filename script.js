@@ -371,6 +371,7 @@ function setupMobileMenu() {
 
     if (hamburgerBtn && mainNav) {
         hamburgerBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
             if (mainNav.classList.contains('active')) {
                 closeMenu();
@@ -381,14 +382,21 @@ function setupMobileMenu() {
 
         if (drawerCloseBtn) {
             drawerCloseBtn.addEventListener('click', (e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 closeMenu();
             });
         }
 
         overlay.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
             closeMenu();
+        });
+
+        // Prevent clicks inside drawer from bubbling to backdrop overlay
+        mainNav.addEventListener('click', (e) => {
+            e.stopPropagation();
         });
 
         navLinks.forEach(link => {
@@ -428,7 +436,7 @@ function setupMobileMenu() {
                             try {
                                 history.pushState(null, '', `#${targetId}`);
                             } catch (err) { }
-                        }, 80);
+                        }, 120);
                         return;
                     }
                 }
@@ -437,11 +445,19 @@ function setupMobileMenu() {
             });
         });
 
+        // Close on Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && mainNav.classList.contains('active')) {
                 closeMenu();
             }
         });
+
+        // Close when resizing back to desktop
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 992 && mainNav.classList.contains('active')) {
+                closeMenu();
+            }
+        }, { passive: true });
     }
 }
 
