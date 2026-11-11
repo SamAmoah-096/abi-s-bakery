@@ -454,7 +454,7 @@ function setupMobileMenu() {
 
         // Close when resizing back to desktop
         window.addEventListener('resize', () => {
-            if (window.innerWidth > 992 && mainNav.classList.contains('active')) {
+            if (window.innerWidth > 1024 && mainNav.classList.contains('active')) {
                 closeMenu();
             }
         }, { passive: true });
